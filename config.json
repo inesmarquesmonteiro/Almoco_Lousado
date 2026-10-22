@@ -43,6 +43,13 @@
     "botaoMapa": "Ver no mapa"
   },
 
+  "calendario": {
+    "mostrar": true,
+    "google": "Google Calendar",
+    "outlook": "Outlook",
+    "ics": "iPhone / outro"
+  },
+
   "ementa": {
     "palavra": "Ementa",
     "nome": "colheita",

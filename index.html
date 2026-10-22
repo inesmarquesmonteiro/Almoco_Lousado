@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- versão 4 (calendário: Google, Outlook, .ics) -->
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
@@ -144,6 +145,11 @@
   .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
   .linkbtn{display:inline-flex;align-items:center;gap:6px;font:500 15px var(--body);color:var(--ember-dark);background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;text-decoration:none;cursor:pointer}
   .linkbtn:hover{border-color:var(--ember)}
+  .calbox{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .callabel{font-size:14px;color:var(--muted);width:100%}
+  .done .calbox{justify-content:center}
+  .done .callabel{color:#d9c4b2}
+  .done .actions{flex-direction:column;align-items:center}
 
   .menu{text-align:center;background:#fff;border:1px solid var(--line);padding:30px 22px 26px;margin-top:6px;position:relative}
   .menu::before{content:"";position:absolute;inset:6px;border:1px solid #f0e6da;pointer-events:none}
@@ -205,6 +211,7 @@
   .submit:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ember-dark)}
   .submit[disabled]{opacity:.7;cursor:progress}
   .form-msg{margin:14px 0 0;font-size:15px;color:#ffb39a;min-height:1em}
+  .test-banner{background:#f2a46b;color:#2b1c14;border-radius:10px;padding:10px 14px;font-size:15px;margin:0 0 18px}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
   .done{text-align:center;padding:10px 0 4px}
   .done__title{font-family:var(--script);font-size:56px;line-height:1;color:#fff;margin:0 0 8px}
@@ -362,7 +369,6 @@
   $("d-mapa").href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(E.pesquisaMapa || `${E.local} ${E.cidade}`);
   txt("d-preco", E.preco); txt("d-notapreco", E.notaPreco);
   txt("d-prazo", `Responde até ${prazo}`); txt("d-notaprazo", E.notaPrazo);
-  document.querySelectorAll("[data-ics]").forEach(b => b.textContent = C.seccoes.botaoCalendario);
 
   const M = C.ementa;
   txt("s-ementa", C.seccoes.ementa); txt("m-palavra", M.palavra); txt("m-nome", M.nome);
@@ -406,6 +412,12 @@
     }
   }).join("");
   $("f-perguntas").innerHTML = html;
+  if (!C.googleScriptUrl){
+    const warn = document.createElement("p");
+    warn.className = "test-banner";
+    warn.textContent = "Modo de teste: as respostas não estão a ser gravadas. Falta preencher o googleScriptUrl no config.json.";
+    $("rsvp").prepend(warn);
+  }
 
   const form = $("rsvp");
   const val = (name) => {
@@ -464,7 +476,7 @@
     const btn = $("f-enviar");
     btn.disabled = true; btn.textContent = F.aEnviar;
     try { await send(body); showDone(data); }
-    catch (err) { console.error(err); msg.textContent = F.erroEnvio; }
+    catch (err) { console.error(err); msg.textContent = `${F.erroEnvio} Detalhe: ${err.message}.`; }
     finally { btn.disabled = false; btn.textContent = F.botaoEnviar; }
   });
 
@@ -474,14 +486,16 @@
       await new Promise(r => setTimeout(r, 500));
       return;
     }
-    try {
-      const res = await fetch(C.googleScriptUrl, {method:"POST", body});
-      const j = await res.json();
-      if (!j.ok) throw new Error(j.error || "Erro no servidor");
-    } catch (err) {
-      if (err instanceof TypeError){ await fetch(C.googleScriptUrl, {method:"POST", mode:"no-cors", body}); return; }
-      throw err;
+    let res;
+    try { res = await fetch(C.googleScriptUrl, {method:"POST", body}); }
+    catch (err) {
+      // Normalmente: o script não está com acesso "Qualquer pessoa" ou o URL não é o /exec.
+      throw new Error("sem ligação ao script (verifica o acesso 'Qualquer pessoa' e o URL /exec)");
     }
+    let j;
+    try { j = await res.json(); }
+    catch { throw new Error("o script não respondeu como esperado (HTTP " + res.status + ")"); }
+    if (!j.ok) throw new Error(j.error || "erro no script");
   }
 
   function showDone(dd){
@@ -491,7 +505,7 @@
     if (dd[L.prenda] === L.respostaSim) partes.push(fill(A.sePrenda, {nome}));
     if (dd[L.mensagem]) partes.push(fill(A.seMensagem, {nome}));
     txt("a-texto", partes.join(" "));
-    $("a-ics").hidden = !vem;
+    if ($("a-ics")) $("a-ics").hidden = !vem;
     form.hidden = true;
     $("done").hidden = false;
     $("done").focus();
@@ -502,25 +516,49 @@
   });
 
   /* ---------- calendário ---------- */
+  const CAL = Object.assign({ mostrar: true, google: "Google Calendar", outlook: "Outlook", ics: "iPhone / outro" }, C.calendario || {});
   const pad = (n) => String(n).padStart(2, "0");
   const [hh, mm] = E.hora.split(":").map(Number);
-  const end = new Date(y, mo - 1, d, hh, mm + (E.duracaoMinutos || 150));
-  const fmt = (D) => `${D.getFullYear()}${pad(D.getMonth()+1)}${pad(D.getDate())}T${pad(D.getHours())}${pad(D.getMinutes())}00`;
-  const icsEsc = (s) => String(s).replace(/([,;\\])/g, "\\$1");
-  document.querySelectorAll("[data-ics]").forEach(b => b.addEventListener("click", () => {
-    const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Almoco despedida//PT","BEGIN:VEVENT",
-      `UID:almoco-${E.data}@despedida`, `DTSTAMP:${fmt(new Date())}`,
-      `DTSTART;TZID=Europe/Lisbon:${fmt(new Date(y, mo - 1, d, hh, mm))}`,
-      `DTEND;TZID=Europe/Lisbon:${fmt(end)}`,
-      `SUMMARY:${icsEsc(`${E.tituloAntesDoNome} ${E.homenageado}`)}`,
-      `LOCATION:${icsEsc(`${E.local}, ${E.cidade}`)}`,
-      `DESCRIPTION:${icsEsc(E.preco)}`,
-      "END:VEVENT","END:VCALENDAR"].join("\r\n");
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([ics], {type:"text/calendar"}));
-    a.download = "almoco-despedida.ics";
-    document.body.appendChild(a); a.click(); a.remove();
-  }));
+  const durMin = E.duracaoMinutos || 150;
+  // hora de Lisboa -> UTC (funciona com hora de verão/inverno e em qualquer fuso do visitante)
+  function lisbonToUTC(Y, M, D, h, m){
+    const guess = Date.UTC(Y, M - 1, D, h, m);
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {timeZone:"Europe/Lisbon", hourCycle:"h23",
+      year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit"}).formatToParts(new Date(guess)).map(p => [p.type, p.value]));
+    const asLisbon = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute);
+    return new Date(guess - (asLisbon - guess));
+  }
+  const startUTC = lisbonToUTC(y, mo, d, hh, mm);
+  const endUTC = new Date(startUTC.getTime() + durMin * 60000);
+  const utc = (D) => `${D.getUTCFullYear()}${pad(D.getUTCMonth()+1)}${pad(D.getUTCDate())}T${pad(D.getUTCHours())}${pad(D.getUTCMinutes())}00Z`;
+  const iso = (D) => D.toISOString().replace(/\.\d{3}Z$/, "Z");
+  const titulo = `${E.tituloAntesDoNome} ${E.homenageado}`;
+  const onde = `${E.local}, ${E.cidade}`;
+  const detalhes = E.preco + (E.notaPreco ? ". " + E.notaPreco : "");
+
+  const gUrl = "https://calendar.google.com/calendar/render?" + new URLSearchParams({
+    action: "TEMPLATE", text: titulo, dates: `${utc(startUTC)}/${utc(endUTC)}`, location: onde, details: detalhes });
+  const oUrl = "https://outlook.office.com/calendar/0/action/compose?" + new URLSearchParams({
+    rru: "addevent", subject: titulo, startdt: iso(startUTC), enddt: iso(endUTC), location: onde, body: detalhes });
+  const icsEsc = (t) => String(t).replace(/\\/g, "\\\\").replace(/([,;])/g, "\\$1");
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Almoco despedida//PT","CALSCALE:GREGORIAN","METHOD:PUBLISH","BEGIN:VEVENT",
+    `UID:almoco-${E.data}-${E.hora.replace(":","")}@despedida`, `DTSTAMP:${utc(new Date())}`,
+    `DTSTART:${utc(startUTC)}`, `DTEND:${utc(endUTC)}`,
+    `SUMMARY:${icsEsc(titulo)}`, `LOCATION:${icsEsc(onde)}`, `DESCRIPTION:${icsEsc(detalhes)}`,
+    "END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const icsUrl = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+
+  document.querySelectorAll("[data-ics]").forEach(b => {
+    if (!CAL.mostrar){ b.closest(".actions") && b.parentElement.children.length === 1 ? b.closest(".actions").remove() : b.remove(); return; }
+    const box = document.createElement("span");
+    box.className = "calbox"; if (b.id) box.id = b.id;
+    box.innerHTML =
+      `<span class="callabel">${esc(C.seccoes.botaoCalendario)}:</span>` +
+      `<a class="linkbtn" target="_blank" rel="noopener" href="${esc(gUrl)}">${esc(CAL.google)}</a>` +
+      `<a class="linkbtn" target="_blank" rel="noopener" href="${esc(oUrl)}">${esc(CAL.outlook)}</a>` +
+      `<a class="linkbtn" download="almoco-despedida.ics" href="${esc(icsUrl)}">${esc(CAL.ics)}</a>`;
+    b.replaceWith(box);
+  });
 
   refresh();
 
@@ -544,7 +582,8 @@
   set("--t-flap", T.abrirAba); set("--t-flap-half", T.abrirAba / 2);
   set("--t-letter", T.subirCarta); set("--t-letter-delay", letterDelay);
   set("--t-fade", T.desvanecer);
-  const byButton = V.avancar === "botao";
+  const norm = (s) => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+  const byButton = norm(V.avancar) === "botao";
   const go = $("e-go");
   go.textContent = V.botaoVerConvite || "Ver convite";
 
