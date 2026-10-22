@@ -1,0 +1,186 @@
+{
+  "googleScriptUrl": "https://script.google.com/macros/s/AKfycbzzt2b7NQGtmz4xfaeZAIZKP01g2l4iJyXr6h650oPqzcvy7DTLxghnMYUIvtWOiUXh/exec",
+
+  "evento": {
+    "homenageado": "Manuel Lousado",
+    "tituloAntesDoNome": "Almoço de despedida do",
+    "frase": "Depois de tantos anos de casa, o Manuel vai para a reforma. Vamos almoçar juntos e brindar a isso.",
+    "data": "2026-11-06",
+    "hora": "12:45",
+    "duracaoMinutos": 165,
+    "local": "Restaurante Piscinas do Mondego",
+    "cidade": "Coimbra",
+    "pesquisaMapa": "Restaurante Piscinas do Mondego Coimbra",
+    "preco": "27 € por pessoa",
+    "notaPreco": "Cada um paga o seu no restaurante.",
+    "prazoResposta": "2026-10-31",
+    "notaPrazo": "Precisamos de confirmar lugares e pratos com o restaurante.",
+    "rodape": "Dúvidas? Fala com a Amélia ou com a Ana Margarida."
+  },
+
+  "envelope": {
+    "mostrar": true,
+    "destinatario": "Para os colegas do Manuel",
+    "inicialSelo": "M",
+    "conviteNaCarta": "Estás convidado para o",
+    "instrucao": "Toca no envelope para abrir",
+    "saltar": "Saltar"
+  },
+
+  "seccoes": {
+    "quandoEOnde": "Quando e onde",
+    "ementa": "O que vamos comer",
+    "botaoCalendario": "Adicionar ao calendário",
+    "botaoMapa": "Ver no mapa"
+  },
+
+  "ementa": {
+    "palavra": "Ementa",
+    "nome": "colheita",
+    "cursos": [
+      { "titulo": "Entradas", "opcoes": ["Seleção de pães, paté do mar, salada de bacalhau"] },
+      { "titulo": "Sopa", "opcoes": ["Creme de legumes"] },
+      { "titulo": "Prato principal", "opcoes": [
+        "Trouxa de bacalhau em couve portuguesa, com batata a murro e migas",
+        "Lombo de porco recheado, com batata padeiro e legumes salteados"
+      ] },
+      { "titulo": "Sobremesa", "opcoes": ["Cheesecake de frutos silvestres"] },
+      { "titulo": "Bebidas", "opcoes": ["Vinho Meia Encosta branco ou tinto, águas e sumos, café ou chá"] }
+    ],
+    "separadorOpcoes": "ou",
+    "preco": "27 € por pessoa",
+    "nota": "O recheio do lombo (ameixa ou alheira) é igual para todos. Decide a votação."
+  },
+
+  "prenda": {
+    "valor": "5 €",
+    "texto": "Envia {valor} por MB WAY a uma destas pessoas, com o teu nome na descrição:",
+    "mbway": [
+      { "nome": "Amélia", "numero": "XXX XXX XXX" },
+      { "nome": "Ana Margarida Pimentel", "numero": "XXX XXX XXX" }
+    ]
+  },
+
+  "formulario": {
+    "titulo": "Confirma a tua presença",
+    "intro": "Demora dois minutos. Mesmo que não possas vir, podes juntar-te à prenda e deixar uma mensagem ao Manuel.",
+    "botaoEnviar": "Enviar resposta",
+    "aEnviar": "A enviar…",
+    "erroCampos": "Falta preencher alguns campos (assinalados acima).",
+    "erroEnvio": "Não foi possível enviar. Verifica a ligação à internet e tenta outra vez.",
+
+    "perguntas": [
+      {
+        "id": "nome",
+        "tipo": "texto",
+        "pergunta": "Nome completo",
+        "coluna": "Nome",
+        "obrigatoria": true,
+        "erro": "Escreve o teu nome."
+      },
+      {
+        "id": "email",
+        "tipo": "email",
+        "pergunta": "Email",
+        "coluna": "Email",
+        "obrigatoria": true,
+        "erro": "Escreve um email válido, por exemplo nome@exemplo.pt."
+      },
+      {
+        "id": "telemovel",
+        "tipo": "telefone",
+        "pergunta": "Telemóvel",
+        "coluna": "Telemóvel",
+        "obrigatoria": true,
+        "erro": "Escreve um número com 9 dígitos."
+      },
+      {
+        "id": "presenca",
+        "tipo": "escolha",
+        "pergunta": "Vens ao almoço?",
+        "coluna": "Vem ao almoço",
+        "obrigatoria": true,
+        "emLinha": true,
+        "opcoes": [
+          { "valor": "Sim", "texto": "Sim, conta comigo" },
+          { "valor": "Não", "texto": "Não posso ir" }
+        ],
+        "erro": "Diz-nos se vens."
+      },
+      {
+        "id": "prato",
+        "tipo": "escolha",
+        "pergunta": "Prato principal",
+        "coluna": "Prato",
+        "obrigatoria": true,
+        "mostrarSe": { "presenca": "Sim" },
+        "opcoes": [
+          { "valor": "Bacalhau", "texto": "Trouxa de bacalhau", "detalhe": "com batata a murro e migas" },
+          { "valor": "Lombo", "texto": "Lombo de porco recheado", "detalhe": "com batata padeiro e legumes salteados" },
+          { "valor": "Outro", "texto": "Preciso de outra opção", "detalhe": "vegetariano ou outra restrição: explica em baixo" }
+        ],
+        "erro": "Escolhe um prato."
+      },
+      {
+        "id": "recheio",
+        "tipo": "escolha",
+        "pergunta": "Recheio do lombo",
+        "ajuda": "É igual para todos, por isso decide a maioria.",
+        "coluna": "Recheio (voto)",
+        "obrigatoria": true,
+        "mostrarSe": { "presenca": "Sim", "prato": "Lombo" },
+        "opcoes": [
+          { "valor": "Ameixa", "texto": "Ameixa" },
+          { "valor": "Alheira", "texto": "Alheira" },
+          { "valor": "Tanto faz", "texto": "Tanto faz" }
+        ],
+        "erro": "Escolhe um recheio (ou \"Tanto faz\")."
+      },
+      {
+        "id": "observacoes",
+        "tipo": "textoLongo",
+        "pergunta": "Alergias, intolerâncias ou outras notas",
+        "coluna": "Observações",
+        "obrigatoria": false,
+        "mostrarSe": { "presenca": "Sim" }
+      },
+      {
+        "id": "prenda",
+        "tipo": "escolha",
+        "pergunta": "Queres juntar-te à prenda do Manuel (5 €)?",
+        "coluna": "Prenda",
+        "obrigatoria": true,
+        "emLinha": true,
+        "opcoes": [
+          { "valor": "Sim", "texto": "Sim" },
+          { "valor": "Não", "texto": "Não" }
+        ],
+        "erro": "Diz-nos se queres participar."
+      },
+      {
+        "id": "infoMbway",
+        "tipo": "mbway",
+        "mostrarSe": { "prenda": "Sim" }
+      },
+      {
+        "id": "mensagem",
+        "tipo": "postal",
+        "pergunta": "Uma mensagem para o postal do Manuel",
+        "ajuda": "Opcional. Vamos juntar todas num postal para lhe entregar no almoço.",
+        "saudacao": "Manuel,",
+        "coluna": "Mensagem para o postal",
+        "obrigatoria": false
+      }
+    ]
+  },
+
+  "agradecimento": {
+    "ligacoes": { "presenca": "presenca", "prenda": "prenda", "mensagem": "mensagem", "nome": "nome", "respostaSim": "Sim" },
+    "titulo": "Obrigado!",
+    "seVem": "Fica combinado, {nome}: vemo-nos {data}, às {hora}.",
+    "seNaoVem": "Obrigado por avisares, {nome}. Vamos sentir a tua falta no almoço.",
+    "sePrenda": "Não te esqueças de enviar os {valor} por MB WAY.",
+    "seMensagem": "A tua mensagem vai no postal.",
+    "outraResposta": "Enviar outra resposta"
+  }
+}
