@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Almoço de despedida</title>
+<meta name="description" content="Convite para o almoço de despedida. Confirma a tua presença.">
+<meta property="og:title" content="Estás convidado para um almoço de despedida">
+<meta property="og:description" content="Abre o convite e confirma a tua presença.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Gilda+Display&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --walnut:#3a2318; --oak:#5b3826; --tan:#b88a5e;
+    --ember:#c4621d; --ember-dark:#9e4c13;
+    --paper:#fffdf9; --ink:#2b1c14; --muted:#7a6558; --line:#e7dccf; --field:#fbf7f1;
+    --kraft:#ead8bf; --kraft-2:#e1cba9; --kraft-3:#d6bd97;
+    --display:"Gilda Display", Georgia, serif;
+    --script:"Allura", "Brush Script MT", cursive;
+    --body:"Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --wood:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='300'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.012 0.42' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.05  0 0 0 0 0.02  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>") 0 0/600px 300px,
+      linear-gradient(176deg,#4a2b1d 0%,#3a2318 45%,#2c190f 100%);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--body)}
+  body.locked{overflow:hidden}
+  img,svg{display:block;max-width:100%}
+  a{color:var(--ember-dark)}
+  :focus-visible{outline:3px solid var(--ember);outline-offset:3px;border-radius:4px}
+  [hidden]{display:none !important}
+
+  /* =========================== ENVELOPE =========================== */
+  .intro{
+    position:fixed;inset:0;z-index:50;display:grid;place-items:center;
+    background:var(--wood);padding:24px;
+    transition:opacity .8s ease, visibility 0s .8s;
+  }
+  .intro.is-gone{opacity:0;visibility:hidden}
+  .intro__inner{display:grid;justify-items:center;gap:26px}
+  .env-btn{background:none;border:0;padding:0;cursor:pointer;border-radius:10px;-webkit-tap-highlight-color:transparent}
+  .env{
+    position:relative;width:min(86vw,460px);aspect-ratio:3/2;
+    perspective:1400px;margin-top:20vh;
+  }
+  .env__back{position:absolute;inset:0;background:var(--kraft-3);border-radius:6px;box-shadow:0 26px 50px rgba(0,0,0,.5)}
+  .env__letter{
+    position:absolute;left:5%;right:5%;top:5%;bottom:5%;z-index:2;
+    background:var(--paper);border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.18);
+    text-align:center;padding:7% 8% 0;color:var(--ink);
+    transition:transform 1s cubic-bezier(.22,.9,.25,1) .55s;
+  }
+  .env__letter small{display:block;font:500 14px/1.3 var(--body);color:var(--muted)}
+  .env__letter .t{font-family:var(--display);color:var(--tan);font-size:clamp(15px,3.6vw,20px);margin-top:4px}
+  .env__letter .n{font-family:var(--script);font-size:clamp(34px,9vw,56px);line-height:1.05;color:var(--walnut);margin:2px 0 4px;white-space:nowrap}
+  .env__letter .d{font:500 clamp(13px,3.2vw,15px)/1.3 var(--body);color:var(--ember-dark)}
+  .env__pocket{
+    position:absolute;inset:0;z-index:3;border-radius:6px;
+    background:linear-gradient(160deg,var(--kraft) 0%,var(--kraft-2) 100%);
+    clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%);
+  }
+  .env__pocket::after{
+    content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--kraft-2),#e6d2b2);
+    clip-path:polygon(0 100%,50% 50%,100% 100%);
+  }
+  .env__to{
+    position:absolute;z-index:4;left:0;right:0;bottom:5%;text-align:center;
+    font-family:var(--script);font-size:clamp(26px,6.4vw,38px);color:var(--oak);
+    transition:opacity .4s;
+  }
+  .env__flap{
+    position:absolute;left:0;right:0;top:0;height:58%;z-index:5;
+    background:linear-gradient(180deg,#e4cba6 0%,#d4b68b 100%);
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    transform-origin:50% 0;transform:rotateX(0deg);
+    transition:transform .6s cubic-bezier(.5,0,.6,1), z-index 0s .3s;
+    filter:drop-shadow(0 3px 2px rgba(0,0,0,.15));
+  }
+  .seal{
+    position:absolute;z-index:6;left:50%;top:58%;width:68px;height:68px;margin:-34px 0 0 -34px;
+    border-radius:50%;display:grid;place-items:center;color:#fff;
+    background:radial-gradient(circle at 38% 32%,#dc7a35,var(--ember) 52%,var(--ember-dark) 100%);
+    box-shadow:0 4px 10px rgba(0,0,0,.35), inset 0 0 0 5px rgba(0,0,0,.08);
+    font-family:var(--script);font-size:44px;line-height:1;padding-top:6px;
+    transition:opacity .25s, transform .35s;
+  }
+  .intro__hint{color:#ead9c8;font-size:16px;margin:0;text-align:center}
+  .intro__skip{
+    position:absolute;top:16px;right:16px;background:none;border:1px solid rgba(255,255,255,.3);
+    color:#ead9c8;border-radius:999px;padding:6px 14px;font:500 14px var(--body);cursor:pointer;
+  }
+  /* aberto */
+  .intro.is-open .seal{opacity:0;transform:scale(.6)}
+  .intro.is-open .env__flap{transform:rotateX(180deg);z-index:1}
+  .intro.is-open .env__letter{transform:translateY(-72%)}
+  .intro.is-open .env__to,.intro.is-open .intro__hint{opacity:0}
+  .intro__hint{transition:opacity .3s}
+  @media (prefers-reduced-motion:no-preference){
+    .intro:not(.is-open) .seal{animation:pulse 2.4s ease-in-out 1.2s infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .env__flap,.env__letter,.seal,.intro{transition:none}
+  }
+
+  /* =========================== PÁGINA =========================== */
+  .hero{position:relative;overflow:hidden;color:#fff;text-align:center;padding:56px 20px 92px;background:var(--wood)}
+  .hero__kicker{font-family:var(--display);font-size:clamp(22px,4.6vw,34px);letter-spacing:.06em;color:var(--tan);margin:0}
+  .hero__name{font-family:var(--script);font-weight:400;font-size:clamp(68px,17vw,132px);line-height:.95;margin:.08em 0 .1em;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+  .hero__line{margin:0 auto;max-width:32ch;color:#ead9c8;font-size:18px}
+  .hero-wrap{position:relative;margin-bottom:64px}
+  .badge{
+    position:absolute;left:50%;bottom:-46px;transform:translateX(-50%);
+    width:108px;height:108px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#d9742a,var(--ember) 55%,var(--ember-dark));
+    color:#fff;display:grid;place-items:center;text-align:center;
+    box-shadow:0 10px 24px rgba(58,35,24,.35);border:3px solid var(--paper);
+    font-family:var(--display);line-height:1.05;
+  }
+  .badge b{display:block;font-size:40px;font-weight:400}
+  .badge span{font-size:15px;letter-spacing:.04em}
+  body.revealed .hero__name{animation:write 1.6s cubic-bezier(.2,.7,.2,1) .1s both}
+  @keyframes write{from{clip-path:inset(0 100% 0 0);opacity:.2}to{clip-path:inset(0 0 0 0);opacity:1}}
+  @media (prefers-reduced-motion:reduce){ body.revealed .hero__name{animation:none} }
+
+  main{max-width:640px;margin:0 auto;padding:0 20px 72px}
+  section{padding:28px 0}
+  h2{font-family:var(--display);font-weight:400;color:var(--walnut);font-size:clamp(28px,6vw,36px);line-height:1.15;margin:0 0 14px;text-align:center}
+  .lead{text-align:center;color:var(--muted);margin:0 auto 4px;max-width:42ch}
+
+  .details{display:grid;gap:2px;margin:8px 0 0;border-top:1px solid var(--line)}
+  .detail{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;padding:16px 0;border-bottom:1px solid var(--line)}
+  .detail svg{width:28px;height:28px;color:var(--ember);margin-top:2px}
+  .detail strong{display:block;font-weight:600;color:var(--walnut)}
+  .detail p{margin:0;color:var(--muted)}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .linkbtn{display:inline-flex;align-items:center;gap:6px;font:500 15px var(--body);color:var(--ember-dark);background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;text-decoration:none;cursor:pointer}
+  .linkbtn:hover{border-color:var(--ember)}
+
+  .menu{text-align:center;background:#fff;border:1px solid var(--line);padding:30px 22px 26px;margin-top:6px;position:relative}
+  .menu::before{content:"";position:absolute;inset:6px;border:1px solid #f0e6da;pointer-events:none}
+  .menu__head{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:10px}
+  .menu__head .word{font-family:var(--display);color:var(--tan);font-size:26px;letter-spacing:.08em;text-transform:uppercase}
+  .menu__head .script{font-family:var(--script);color:var(--walnut);font-size:44px;line-height:1}
+  .course{margin:18px 0 0}
+  .course h3{font-family:var(--display);font-weight:400;color:var(--walnut);font-size:21px;letter-spacing:.06em;margin:0 0 2px;text-transform:uppercase}
+  .course p{margin:0;color:var(--muted);font-size:16px}
+  .or{display:flex;align-items:center;justify-content:center;gap:12px;margin:6px auto;color:var(--tan);font-family:var(--display);font-size:15px;max-width:180px}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--tan);opacity:.6}
+  .menu__price{margin-top:20px;font-family:var(--display);color:var(--walnut);font-size:19px}
+  .menu__note{margin:4px 0 0;color:var(--muted);font-size:14px}
+
+  .rsvp{margin-top:12px;background:var(--walnut);color:#f6ece2;border-radius:18px;padding:30px 20px 26px}
+  .rsvp h2{color:#fff}
+  .rsvp .lead{color:#d9c4b2}
+  form{margin-top:18px}
+  .field{margin:0 0 20px;border:0;padding:0;min-width:0}
+  .field > label,.field > legend{display:block;font-weight:500;margin:0 0 7px;padding:0;color:#fff}
+  .hint{display:block;font-size:14px;color:#cdb6a2;margin:-3px 0 8px}
+  .req{color:#f2a46b}
+  input[type=text],input[type=email],input[type=tel],textarea{width:100%;font:400 17px var(--body);color:var(--ink);background:var(--field);border:2px solid transparent;border-radius:10px;padding:12px 14px}
+  input:focus,textarea:focus{outline:none;border-color:var(--ember)}
+  textarea{min-height:92px;resize:vertical}
+  .choices{display:grid;gap:8px}
+  .choices--row{grid-template-columns:1fr 1fr}
+  .choice{position:relative}
+  .choice input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .choice span{display:block;padding:12px 14px 12px 44px;border-radius:10px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.14);position:relative;line-height:1.35;transition:background .15s,border-color .15s}
+  .choice span::before{content:"";position:absolute;left:14px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;border:2px solid #cdb6a2}
+  .choice span small{display:block;color:#cdb6a2;font-size:14px}
+  .choice input:checked + span{background:rgba(196,98,29,.22);border-color:var(--ember)}
+  .choice input:checked + span::before{border-color:#fff;background:radial-gradient(circle,#fff 0 4px,var(--ember) 5px)}
+  .choice input:focus-visible + span{outline:3px solid #f2a46b;outline-offset:2px}
+  .q.is-hidden{display:none}
+  @media (prefers-reduced-motion:no-preference){
+    .q.just-shown{animation:open .25s ease-out}
+    @keyframes open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  }
+  .mbway{background:rgba(255,255,255,.08);border-left:3px solid var(--ember);border-radius:0 10px 10px 0;padding:12px 14px;margin:-6px 0 20px;font-size:16px}
+  .mbway p{margin:0 0 6px}
+  .mbway ul{margin:0;padding:0;list-style:none}
+  .mbway li{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.15)}
+  .mbway li:last-child{border-bottom:0}
+  .mbway b{font-weight:600;color:#fff;white-space:nowrap}
+  .postcard{background:#fffaf2;color:var(--ink);border-radius:6px;padding:16px 16px 12px;position:relative}
+  .postcard__to{font-family:var(--script);font-size:30px;color:var(--oak);line-height:1;margin:0 0 4px}
+  .postcard textarea{background:repeating-linear-gradient(to bottom,transparent 0 31px,#e3d5c4 31px 32px);background-attachment:local;line-height:32px;padding:0 2px;border:0;border-radius:0;min-height:130px;font-size:18px}
+  .postcard textarea:focus{outline:2px solid var(--ember);outline-offset:4px}
+  .stamp{position:absolute;top:12px;right:12px;width:46px;height:54px;border:2px dashed var(--tan);border-radius:3px;display:grid;place-items:center;color:var(--ember)}
+  .stamp svg{width:24px;height:24px}
+  .error{display:none;color:#ffb39a;font-size:14px;margin:6px 0 0}
+  .field.has-error .error{display:block}
+  .field.has-error input{border-color:#e0714f}
+  .field.has-error .choice span{border-color:rgba(224,113,79,.7)}
+  .submit{width:100%;margin-top:6px;border:0;border-radius:12px;cursor:pointer;background:var(--ember);color:#fff;font:600 18px var(--body);padding:15px 18px;box-shadow:0 6px 0 var(--ember-dark);transition:transform .08s,box-shadow .08s,background .15s}
+  .submit:hover{background:#d06c24}
+  .submit:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ember-dark)}
+  .submit[disabled]{opacity:.7;cursor:progress}
+  .form-msg{margin:14px 0 0;font-size:15px;color:#ffb39a;min-height:1em}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .done{text-align:center;padding:10px 0 4px}
+  .done__title{font-family:var(--script);font-size:56px;line-height:1;color:#fff;margin:0 0 8px}
+  .done p{margin:0 auto 10px;max-width:36ch;color:#ead9c8}
+  .done .linkbtn{color:#fff;border-color:rgba(255,255,255,.35)}
+  .done .actions{justify-content:center;margin-top:16px}
+  footer{text-align:center;color:var(--muted);font-size:14px;padding:0 20px 40px}
+  .fatal{max-width:520px;margin:15vh auto;padding:20px;font:16px/1.5 var(--body)}
+
+  @media (min-width:560px){ .rsvp{padding:38px 36px 32px} .detail{grid-template-columns:52px 1fr} }
+  @media (max-width:360px){ .choices--row{grid-template-columns:1fr} }
+</style>
+</head>
+<body class="locked">
+
+<!-- ========== ENVELOPE ========== -->
+<div class="intro" id="intro" hidden>
+  <button type="button" class="intro__skip" id="skip"></button>
+  <div class="intro__inner">
+    <button type="button" class="env-btn" id="env-btn" aria-label="Abrir o convite">
+      <div class="env" aria-hidden="true">
+        <div class="env__back"></div>
+        <div class="env__letter">
+          <small id="l-convite"></small>
+          <div class="t" id="l-titulo"></div>
+          <div class="n" id="l-nome"></div>
+          <div class="d" id="l-data"></div>
+        </div>
+        <div class="env__pocket"></div>
+        <div class="env__to" id="e-para"></div>
+        <div class="env__flap"></div>
+        <div class="seal" id="e-selo"></div>
+      </div>
+    </button>
+    <p class="intro__hint" id="e-instrucao"></p>
+  </div>
+</div>
+
+<!-- ========== PÁGINA ========== -->
+<div id="page" hidden>
+  <div class="hero-wrap">
+    <header class="hero">
+      <p class="hero__kicker" id="h-titulo"></p>
+      <h1 class="hero__name" id="h-nome"></h1>
+      <p class="hero__line" id="h-frase"></p>
+    </header>
+    <div class="badge" aria-hidden="true"><div><b id="b-dia"></b><span id="b-mes"></span></div></div>
+  </div>
+
+  <main>
+    <section aria-labelledby="s-quando">
+      <h2 id="s-quando"></h2>
+      <div class="details">
+        <div class="detail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <div><strong id="d-data"></strong><div class="actions"><button type="button" class="linkbtn" data-ics></button></div></div>
+        </div>
+        <div class="detail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+          <div><strong id="d-local"></strong><div class="actions"><a class="linkbtn" id="d-mapa" target="_blank" rel="noopener"></a></div></div>
+        </div>
+        <div class="detail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5a4 4 0 1 0 0 7M7 11h6M7 13.5h6"/></svg>
+          <div><strong id="d-preco"></strong><p id="d-notapreco"></p></div>
+        </div>
+        <div class="detail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>
+          <div><strong id="d-prazo"></strong><p id="d-notaprazo"></p></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-ementa">
+      <h2 id="s-ementa"></h2>
+      <div class="menu">
+        <div class="menu__head" aria-hidden="true"><span class="word" id="m-palavra"></span><span class="script" id="m-nome"></span></div>
+        <div id="m-cursos"></div>
+        <p class="menu__price" id="m-preco"></p>
+        <p class="menu__note" id="m-nota"></p>
+      </div>
+    </section>
+
+    <section class="rsvp" aria-labelledby="f-titulo" id="responder">
+      <h2 id="f-titulo"></h2>
+      <p class="lead" id="f-intro"></p>
+      <form id="rsvp" novalidate>
+        <div class="hp" aria-hidden="true"><label>Não preencher <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div id="f-perguntas"></div>
+        <button class="submit" type="submit" id="f-enviar"></button>
+        <p class="form-msg" id="form-msg" role="alert"></p>
+      </form>
+      <div class="done" id="done" tabindex="-1" hidden>
+        <p class="done__title" id="a-titulo"></p>
+        <p id="a-texto"></p>
+        <div class="actions">
+          <button type="button" class="linkbtn" data-ics id="a-ics"></button>
+          <button type="button" class="linkbtn" id="again"></button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer id="rodape"></footer>
+</div>
+
+<script>
+(async function(){
+  /* ---------- carregar config.json ---------- */
+  let C;
+  try {
+    const res = await fetch("config.json", {cache: "no-store"});
+    C = await res.json();
+  } catch (err) {
+    document.body.classList.remove("locked");
+    document.body.innerHTML = '<div class="fatal"><b>Não foi possível ler o config.json.</b><br>' +
+      'Se abriste o ficheiro diretamente no computador, o browser bloqueia a leitura. ' +
+      'Publica no GitHub Pages ou corre um servidor local (ver LEIA-ME). ' +
+      'Se já está publicado, verifica se o JSON tem algum erro de vírgulas ou aspas.<br><small>' +
+      String(err) + '</small></div>';
+    return;
+  }
+
+  const E = C.evento, F = C.formulario, A = C.agradecimento, L = A.ligacoes;
+  const $ = (id) => document.getElementById(id);
+  const txt = (id, s) => { const el = $(id); if (el) el.textContent = s ?? ""; };
+  const fill = (s, extra={}) => String(s || "").replace(/\{(\w+)\}/g, (m, k) => (extra[k] ?? vars[k] ?? m));
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+  /* ---------- datas ---------- */
+  const [y, mo, d] = E.data.split("-").map(Number);
+  const dt = new Date(y, mo - 1, d);
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const dataLonga = cap(new Intl.DateTimeFormat("pt-PT", {weekday:"long", day:"numeric", month:"long", year:"numeric"}).format(dt));
+  const dataCurta = new Intl.DateTimeFormat("pt-PT", {weekday:"long", day:"numeric", month:"long"}).format(dt);
+  const hora = E.hora.replace(":", "h");
+  const [py, pm, pd] = E.prazoResposta.split("-").map(Number);
+  const prazo = new Intl.DateTimeFormat("pt-PT", {day:"numeric", month:"long"}).format(new Date(py, pm - 1, pd));
+  const mesCurto = new Intl.DateTimeFormat("pt-PT", {month:"short"}).format(dt).replace(".", "");
+  const vars = { data: dataCurta, hora, valor: C.prenda.valor, prazo, local: E.local };
+
+  /* ---------- envelope ---------- */
+  const V = C.envelope || {};
+  txt("l-convite", V.conviteNaCarta); txt("l-titulo", E.tituloAntesDoNome); txt("l-nome", E.homenageado);
+  txt("l-data", `${cap(dataCurta)}, ${hora}`);
+  txt("e-para", V.destinatario); txt("e-selo", V.inicialSelo); txt("e-instrucao", V.instrucao); txt("skip", V.saltar);
+
+  /* ---------- página ---------- */
+  document.title = `${E.tituloAntesDoNome} ${E.homenageado}`;
+  txt("h-titulo", E.tituloAntesDoNome); txt("h-nome", E.homenageado); txt("h-frase", E.frase);
+  txt("b-dia", d); txt("b-mes", mesCurto);
+  txt("s-quando", C.seccoes.quandoEOnde);
+  txt("d-data", `${dataLonga}, às ${hora}`);
+  txt("d-local", `${E.local}, ${E.cidade}`);
+  $("d-mapa").textContent = C.seccoes.botaoMapa;
+  $("d-mapa").href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(E.pesquisaMapa || `${E.local} ${E.cidade}`);
+  txt("d-preco", E.preco); txt("d-notapreco", E.notaPreco);
+  txt("d-prazo", `Responde até ${prazo}`); txt("d-notaprazo", E.notaPrazo);
+  document.querySelectorAll("[data-ics]").forEach(b => b.textContent = C.seccoes.botaoCalendario);
+
+  const M = C.ementa;
+  txt("s-ementa", C.seccoes.ementa); txt("m-palavra", M.palavra); txt("m-nome", M.nome);
+  $("m-cursos").innerHTML = M.cursos.map(c => `<div class="course"><h3>${esc(c.titulo)}</h3>` +
+    c.opcoes.map(o => `<p>${esc(o)}</p>`).join(`<div class="or" aria-hidden="true">${esc(M.separadorOpcoes)}</div>`) + `</div>`).join("");
+  txt("m-preco", M.preco); txt("m-nota", M.nota);
+  txt("f-titulo", F.titulo); txt("f-intro", F.intro); txt("f-enviar", F.botaoEnviar);
+  txt("a-titulo", A.titulo); txt("again", A.outraResposta); txt("rodape", E.rodape);
+
+  /* ---------- perguntas ---------- */
+  const Q = F.perguntas;
+  const star = (q) => q.obrigatoria ? ' <span class="req" aria-hidden="true">*</span>' : "";
+  const hint = (q) => q.ajuda ? `<span class="hint">${esc(q.ajuda)}</span>` : "";
+  const err = (q) => q.erro ? `<p class="error">${esc(q.erro)}</p>` : `<p class="error">Este campo é obrigatório.</p>`;
+  const html = Q.map(q => {
+    const id = esc(q.id), cls = `q field`;
+    switch (q.tipo) {
+      case "texto": case "email": case "telefone": {
+        const type = {texto:"text", email:"email", telefone:"tel"}[q.tipo];
+        const ac = {nome:"name", email:"email", telefone:"tel"}[q.tipo === "texto" ? q.id : q.tipo] || "off";
+        return `<div class="${cls}" data-q="${id}"><label for="q-${id}">${esc(q.pergunta)}${star(q)}</label>${hint(q)}
+          <input id="q-${id}" name="${id}" type="${type}" autocomplete="${ac}" ${q.tipo==="telefone"?'inputmode="tel"':""}>${err(q)}</div>`;
+      }
+      case "textoLongo":
+        return `<div class="${cls}" data-q="${id}"><label for="q-${id}">${esc(q.pergunta)}${star(q)}</label>${hint(q)}
+          <textarea id="q-${id}" name="${id}" rows="3"></textarea>${err(q)}</div>`;
+      case "escolha":
+        return `<fieldset class="${cls}" data-q="${id}"><legend>${esc(q.pergunta)}${star(q)}</legend>${hint(q)}
+          <div class="choices ${q.emLinha ? "choices--row" : ""}">` +
+          q.opcoes.map(o => `<label class="choice"><input type="radio" name="${id}" value="${esc(o.valor)}"><span>${esc(o.texto)}${o.detalhe ? `<small>${esc(o.detalhe)}</small>` : ""}</span></label>`).join("") +
+          `</div>${err(q)}</fieldset>`;
+      case "postal":
+        return `<div class="${cls}" data-q="${id}"><label for="q-${id}">${esc(q.pergunta)}${star(q)}</label>${hint(q)}
+          <div class="postcard"><p class="postcard__to" aria-hidden="true">${esc(q.saudacao || "")}</p>
+          <span class="stamp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span>
+          <textarea id="q-${id}" name="${id}" rows="4"></textarea></div>${err(q)}</div>`;
+      case "mbway":
+        return `<div class="q" data-q="${id}"><div class="mbway"><p>${esc(fill(C.prenda.texto))}</p><ul>` +
+          C.prenda.mbway.map(p => `<li><span>${esc(p.nome)}</span><b>${esc(p.numero)}</b></li>`).join("") + `</ul></div></div>`;
+      default: return "";
+    }
+  }).join("");
+  $("f-perguntas").innerHTML = html;
+
+  const form = $("rsvp");
+  const val = (name) => {
+    const el = form.elements[name];
+    if (!el) return "";
+    return (el.value || "").trim();
+  };
+  const visible = (q) => !q.mostrarSe || Object.entries(q.mostrarSe).every(([k, v]) =>
+    Array.isArray(v) ? v.includes(val(k)) : val(k) === v) && (!q.mostrarSe || Object.keys(q.mostrarSe).every(k => {
+      const dep = Q.find(x => x.id === k); return !dep || visible(dep);
+    }));
+
+  function refresh(){
+    Q.forEach(q => {
+      const el = form.querySelector(`[data-q="${q.id}"]`);
+      if (!el) return;
+      const show = visible(q), was = !el.classList.contains("is-hidden");
+      el.classList.toggle("is-hidden", !show);
+      el.classList.toggle("just-shown", show && !was);
+    });
+  }
+  form.addEventListener("change", (e) => { refresh(); e.target.closest(".field")?.classList.remove("has-error"); });
+  form.addEventListener("input", (e) => e.target.closest(".field")?.classList.remove("has-error"));
+
+  function isValid(q){
+    const v = val(q.id);
+    if (!v) return !q.obrigatoria;
+    if (q.tipo === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    if (q.tipo === "telefone") return v.replace(/\D/g, "").replace(/^(00)?351/, "").length === 9;
+    if (q.tipo === "texto") return v.length >= 2;
+    return true;
+  }
+  function validate(){
+    form.querySelectorAll(".has-error").forEach(f => f.classList.remove("has-error"));
+    const bad = Q.filter(q => q.tipo !== "mbway" && visible(q) && !isValid(q));
+    bad.forEach(q => form.querySelector(`[data-q="${q.id}"]`).classList.add("has-error"));
+    if (bad.length){
+      const first = form.querySelector(`[data-q="${bad[0].id}"]`);
+      first.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"center"});
+      first.querySelector("input,textarea")?.focus({preventScroll:true});
+    }
+    return !bad.length;
+  }
+
+  const msg = $("form-msg");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    if (!validate()) { msg.textContent = F.erroCampos; return; }
+    const answers = Q.filter(q => q.tipo !== "mbway").map(q => [q.id, q.coluna || q.pergunta, visible(q) ? val(q.id) : ""]);
+    const data = Object.fromEntries(answers.map(([id, , v]) => [id, v]));
+    const body = new URLSearchParams(data);
+    body.set("_colunas", JSON.stringify(answers.map(([id, col]) => [id, col])));
+    body.set("website", val("website"));
+
+    const btn = $("f-enviar");
+    btn.disabled = true; btn.textContent = F.aEnviar;
+    try { await send(body); showDone(data); }
+    catch (err) { console.error(err); msg.textContent = F.erroEnvio; }
+    finally { btn.disabled = false; btn.textContent = F.botaoEnviar; }
+  });
+
+  async function send(body){
+    if (!C.googleScriptUrl){
+      console.info("[modo de teste] resposta não gravada:", Object.fromEntries(body));
+      await new Promise(r => setTimeout(r, 500));
+      return;
+    }
+    try {
+      const res = await fetch(C.googleScriptUrl, {method:"POST", body});
+      const j = await res.json();
+      if (!j.ok) throw new Error(j.error || "Erro no servidor");
+    } catch (err) {
+      if (err instanceof TypeError){ await fetch(C.googleScriptUrl, {method:"POST", mode:"no-cors", body}); return; }
+      throw err;
+    }
+  }
+
+  function showDone(dd){
+    const nome = (dd[L.nome] || "").split(/\s+/)[0];
+    const vem = dd[L.presenca] === L.respostaSim;
+    const partes = [fill(vem ? A.seVem : A.seNaoVem, {nome})];
+    if (dd[L.prenda] === L.respostaSim) partes.push(fill(A.sePrenda, {nome}));
+    if (dd[L.mensagem]) partes.push(fill(A.seMensagem, {nome}));
+    txt("a-texto", partes.join(" "));
+    $("a-ics").hidden = !vem;
+    form.hidden = true;
+    $("done").hidden = false;
+    $("done").focus();
+  }
+  $("again").addEventListener("click", () => {
+    form.reset(); refresh(); $("done").hidden = true; form.hidden = false;
+    form.querySelector("input:not([tabindex])")?.focus();
+  });
+
+  /* ---------- calendário ---------- */
+  const pad = (n) => String(n).padStart(2, "0");
+  const [hh, mm] = E.hora.split(":").map(Number);
+  const end = new Date(y, mo - 1, d, hh, mm + (E.duracaoMinutos || 150));
+  const fmt = (D) => `${D.getFullYear()}${pad(D.getMonth()+1)}${pad(D.getDate())}T${pad(D.getHours())}${pad(D.getMinutes())}00`;
+  const icsEsc = (s) => String(s).replace(/([,;\\])/g, "\\$1");
+  document.querySelectorAll("[data-ics]").forEach(b => b.addEventListener("click", () => {
+    const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Almoco despedida//PT","BEGIN:VEVENT",
+      `UID:almoco-${E.data}@despedida`, `DTSTAMP:${fmt(new Date())}`,
+      `DTSTART;TZID=Europe/Lisbon:${fmt(new Date(y, mo - 1, d, hh, mm))}`,
+      `DTEND;TZID=Europe/Lisbon:${fmt(end)}`,
+      `SUMMARY:${icsEsc(`${E.tituloAntesDoNome} ${E.homenageado}`)}`,
+      `LOCATION:${icsEsc(`${E.local}, ${E.cidade}`)}`,
+      `DESCRIPTION:${icsEsc(E.preco)}`,
+      "END:VEVENT","END:VCALENDAR"].join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([ics], {type:"text/calendar"}));
+    a.download = "almoco-despedida.ics";
+    document.body.appendChild(a); a.click(); a.remove();
+  }));
+
+  refresh();
+
+  /* ---------- abrir envelope ---------- */
+  const intro = $("intro"), page = $("page");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const skipIntro = V.mostrar === false || new URLSearchParams(location.search).has("direto");
+  function reveal(){
+    page.hidden = false;
+    document.body.classList.remove("locked");
+    document.body.classList.add("revealed");
+    window.scrollTo(0, 0);
+  }
+  if (skipIntro){ reveal(); return; }
+  intro.hidden = false;
+  let opened = false;
+  function openEnvelope(fast){
+    if (opened) return; opened = true;
+    intro.classList.add("is-open");
+    const wait = fast || reduce ? 0 : 1900;
+    setTimeout(() => {
+      reveal();
+      intro.classList.add("is-gone");
+      setTimeout(() => intro.remove(), 900);
+    }, wait);
+  }
+  $("env-btn").addEventListener("click", () => openEnvelope(false));
+  $("skip").addEventListener("click", () => openEnvelope(true));
+})();
+</script>
+</body>
+</html>
