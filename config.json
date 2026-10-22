@@ -1,5 +1,5 @@
 {
-  "googleScriptUrl": "https://script.google.com/macros/s/AKfycbzzt2b7NQGtmz4xfaeZAIZKP01g2l4iJyXr6h650oPqzcvy7DTLxghnMYUIvtWOiUXh/exec",
+  "googleScriptUrl": "https://script.google.com/macros/s/AKfycby6CCqIBmz7qedqvwMQCs0sg9JXhYBHkTVJewyvWSKID-aQ5l3arMDESgzqaXizksGp/exec",
 
   "evento": {
     "homenageado": "Manuel Lousado",
@@ -24,7 +24,16 @@
     "inicialSelo": "M",
     "conviteNaCarta": "Estás convidado para o",
     "instrucao": "Toca no envelope para abrir",
-    "saltar": "Saltar"
+    "saltar": "Saltar",
+    "avancar": "automatico",
+    "botaoVerConvite": "Ver convite",
+    "tempos": {
+      "abrirAba": 1.0,
+      "esperaAntesDaCarta": 0.3,
+      "subirCarta": 1.8,
+      "cartaVisivel": 3.0,
+      "desvanecer": 1.2
+    }
   },
 
   "seccoes": {
