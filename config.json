@@ -1,5 +1,6 @@
 {
   "googleScriptUrl": "https://script.google.com/macros/s/AKfycby6CCqIBmz7qedqvwMQCs0sg9JXhYBHkTVJewyvWSKID-aQ5l3arMDESgzqaXizksGp/exec",
+  "icone": "favicon.png",
 
   "evento": {
     "homenageado": "Manuel Lousado",
@@ -25,7 +26,7 @@
     "conviteNaCarta": "Estás convidado para o",
     "instrucao": "Toca no envelope para abrir",
     "saltar": "Saltar",
-    "avancar": "botao",
+    "avancar": "automatico",
     "botaoVerConvite": "Ver convite",
     "tempos": {
       "abrirAba": 1.0,

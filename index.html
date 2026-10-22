@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- versão 4 (calendário: Google, Outlook, .ics) -->
+<!-- versão 5 (ícone no separador) -->
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
@@ -8,6 +8,8 @@
 <meta name="description" content="Convite para o almoço de despedida. Confirma a tua presença.">
 <meta property="og:title" content="Estás convidado para um almoço de despedida">
 <meta property="og:description" content="Abre o convite e confirma a tua presença.">
+<link rel="icon" type="image/png" href="favicon.png" id="favicon">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Allura&family=Gilda+Display&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
@@ -360,6 +362,7 @@
 
   /* ---------- página ---------- */
   document.title = `${E.tituloAntesDoNome} ${E.homenageado}`;
+  if (C.icone) $("favicon").href = C.icone;
   txt("h-titulo", E.tituloAntesDoNome); txt("h-nome", E.homenageado); txt("h-frase", E.frase);
   txt("b-dia", d); txt("b-mes", mesCurto);
   txt("s-quando", C.seccoes.quandoEOnde);
